@@ -1,16 +1,18 @@
 require Logger
+require IEx
 
 defmodule Pixie.Protocol do
 
+  def handle(message) when is_map(message), do: handle([message])
   def handle(messages) when is_list(messages) do
     messages
       |> Enum.map(&Pixie.Message.init/1)
       |> only_handshake
-      |> Enum.map(&handle/1)
+      |> Enum.map(&handle_message/1)
       |> via_transport
   end
 
-  def handle message do
+  def handle_message(message) do
     response = Pixie.Response.init message
     dispatch %Pixie.Event{message: message, response: response}
   end

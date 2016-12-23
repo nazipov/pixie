@@ -40,11 +40,11 @@ defmodule Pixie.Response.Connect do
       |> put(message, :id)
       |> put(message, :client_id)
       |> Map.put(:advice, advice)
-      |> Map.put(:timestamp, now)
+      # |> Map.put(:timestamp, now)
   end
 
   defp now do
-    {:ok, timestamp} = Timex.Date.now |> Timex.DateFormat.format("{ISO}")
+    {:ok, timestamp} = Timex.Date.now |> Timex.format("{ISO}")
     timestamp
   end
 

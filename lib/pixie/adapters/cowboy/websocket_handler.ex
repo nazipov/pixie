@@ -1,6 +1,9 @@
+require IEx
+
 defmodule Pixie.Adapter.Cowboy.WebsocketHandler do
   require Logger
-  @behaviour :cowboy_websocket_handler
+  # @behaviour :cowboy_websocket_handler
+  @behaviour :cowboy_websocket
   @max_messages_per_frame 64
 
   def init _transport, req, opts do
@@ -21,7 +24,7 @@ defmodule Pixie.Adapter.Cowboy.WebsocketHandler do
 
   def websocket_handle {:text, data}, req, state do
     data = Poison.decode! data
-    case Pixie.Protocol.handle data do
+    case Pixie.Protocol.handle(data) do
       :ok ->
         {:ok, req, state}
       [] ->
@@ -37,7 +40,7 @@ defmodule Pixie.Adapter.Cowboy.WebsocketHandler do
   end
 
   def websocket_handle frame, req, state do
-    :cowboy_websocket.handle frame, req, state
+    {:ok, req, state}
   end
 
   def websocket_info {:deliver, []}, req, state do
