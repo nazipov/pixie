@@ -1,7 +1,7 @@
 defmodule Pixie.Backend.Redis.Clients do
   import Pixie.Backend.Redis.Connection
 
-  alias Timex.Time
+  alias Timex.{Time,Duration}
 
   @moduledoc """
   This process manages the generation and removal of client processes.
@@ -68,11 +68,11 @@ defmodule Pixie.Backend.Redis.Clients do
   end
 
   defp now do
-    Time.now |> Time.to_usecs
+    Duration.now |> Duration.to_microseconds
   end
 
   defp cutoff do
-    Time.now |> Time.sub(Time.from(Pixie.timeout * 1.6, :msecs)) |> Time.to_usecs
+    Duration.now |> Duration.sub(Duration.from_milliseconds(Pixie.timeout * 1.6)) |> Duration.to_microseconds
   end
 
 end

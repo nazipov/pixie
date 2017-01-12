@@ -25,7 +25,7 @@ defmodule PixieResponseConnectSpec do
     expect(response.id).to eq("efgh5678")
   end
 
-  it "returns an ISO8601 timestamp" do
+  xit "returns an ISO8601 timestamp" do
     {ok, parsed} = Timex.DateFormat.parse(response.timestamp, "{ISO}")
     expect(ok).to eq(:ok)
     expect(parsed.__struct__).to eq(Timex.DateTime)

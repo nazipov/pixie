@@ -150,7 +150,7 @@ defmodule Pixie.Monitor do
   handshake, or via `Pixie.subscribe/2`
   """
   def created_client client_id do
-    GenEvent.notify __MODULE__, {:created_client, [client_id, Time.now]}
+    GenEvent.notify __MODULE__, {:created_client, [client_id, now]}
   end
 
   @doc """
@@ -158,7 +158,7 @@ defmodule Pixie.Monitor do
   protocol disconnect or for a system generated reason, such as a timeout.
   """
   def destroyed_client client_id, reason \\ "Unknown reason" do
-    GenEvent.notify __MODULE__, {:destroyed_client, [client_id, reason, Time.now]}
+    GenEvent.notify __MODULE__, {:destroyed_client, [client_id, reason, now]}
   end
 
   @doc """
@@ -166,7 +166,7 @@ defmodule Pixie.Monitor do
   New channels are created when the first client subscribes to them.
   """
   def created_channel channel_name do
-    GenEvent.notify __MODULE__, {:created_channel, [channel_name, Time.now]}
+    GenEvent.notify __MODULE__, {:created_channel, [channel_name, now]}
   end
 
   @doc """
@@ -174,21 +174,21 @@ defmodule Pixie.Monitor do
   Channels are destroyed when the last client unsubscribes from them.
   """
   def destroyed_channel channel_name do
-    GenEvent.notify __MODULE__, {:destroyed_channel, [channel_name, Time.now]}
+    GenEvent.notify __MODULE__, {:destroyed_channel, [channel_name, now]}
   end
 
   @doc """
   Called by the backend when a client subscribes to a channel.
   """
   def client_subscribed client_id, channel_name do
-    GenEvent.notify __MODULE__, {:client_subscribed, [client_id, channel_name, Time.now]}
+    GenEvent.notify __MODULE__, {:client_subscribed, [client_id, channel_name, now]}
   end
 
   @doc """
   Called by the backend when a client unsubscribes from a channel.
   """
   def client_unsubscribed client_id, channel_name do
-    GenEvent.notify __MODULE__, {:client_unsubscribed, [client_id, channel_name, Time.now]}
+    GenEvent.notify __MODULE__, {:client_unsubscribed, [client_id, channel_name, now]}
   end
 
   @doc """
@@ -196,7 +196,7 @@ defmodule Pixie.Monitor do
   This includes server-generated messages using `Pixie.publish/2`
   """
   def received_message %Pixie.Message.Publish{client_id: client_id, id: message_id} do
-    GenEvent.notify __MODULE__, {:received_message, [client_id, message_id, Time.now]}
+    GenEvent.notify __MODULE__, {:received_message, [client_id, message_id, now]}
   end
   def received_message(_), do: :ok
 
@@ -204,8 +204,12 @@ defmodule Pixie.Monitor do
   Called by adapters when a message is finally delivered to a client.
   """
   def delivered_message %Pixie.Message.Publish{client_id: client_id, id: message_id} do
-    GenEvent.notify __MODULE__, {:delivered_message, [client_id, message_id, Time.now]}
+    GenEvent.notify __MODULE__, {:delivered_message, [client_id, message_id, now]}
   end
   def delivered_message(_), do: :ok
+
+  defp now do
+    Timex.Duration.now |> Timex.Duration.to_erl
+  end
 
 end

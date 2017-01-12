@@ -51,6 +51,6 @@ defmodule Pixie.ExtensionRegistry do
   end
 
   defp now do
-    Timex.Time.now |> Timex.Time.to_usecs
+    Timex.Duration.now |> Timex.Duration.to_microseconds
   end
 end
